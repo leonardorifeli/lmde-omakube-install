@@ -1,5 +1,7 @@
 # LMDE Post-Install Script (Omakub Style)
 
+If you're running Ubuntu 24.04 or later, you can install the official [Omakase Developer Setup for Ubuntu 24.04+ by DHH](https://omakub.org/).
+
 ![Preview](assets/screenshots/omakub-lmde-preview.png)
 
 This project contains a post-install script to transform Linux Mint Debian Edition (LMDE) into a beautiful and productive KDE Plasma environment inspired by [Omakub](https://omakub.org).
