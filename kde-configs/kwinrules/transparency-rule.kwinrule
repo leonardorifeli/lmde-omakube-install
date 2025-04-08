@@ -1,0 +1,15 @@
+[1]
+Description=Enable transparency on Konsole
+clientmachine=
+classname=konsole
+matchClientMachine=false
+matchClass=true
+matchRole=false
+matchTitle=false
+opacityactive=0.90
+opacityinactive=0.80
+type=0
+wmclass=konsole
+
+[General]
+count=1

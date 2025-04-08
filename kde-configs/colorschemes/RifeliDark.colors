@@ -1,0 +1,15 @@
+[ColorScheme]
+Name=RifeliDark
+Description=Dark color scheme for Rifeli LMDE
+shadeSortColumn=true
+
+[Colors:Window]
+BackgroundAlternate=32,34,37
+BackgroundNormal=26,27,30
+ForegroundActive=255,147,59
+ForegroundInactive=172,172,172
+ForegroundNormal=235,235,235
+
+[Colors:View]
+BackgroundNormal=28,28,30
+ForegroundNormal=235,235,235

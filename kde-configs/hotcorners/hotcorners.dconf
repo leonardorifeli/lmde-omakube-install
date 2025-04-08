@@ -1,0 +1,6 @@
+[/org/gnome/shell/extensions/hot-corners]
+active=true
+top-left='overview'
+top-right=''
+bottom-left=''
+bottom-right=''
