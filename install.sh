@@ -42,6 +42,7 @@ function install_starship() {
 function configure_shell() {
   echo "\n⚙️ Configuring shell..."
   mkdir -p ~/.config/starship
+  echo 'export LANG=en_US.UTF-8' >> ~/.zshrc
   cp config/.zshrc ~/.zshrc
   cp config/starship.toml ~/.config/starship.toml
   chsh -s $(which zsh)
@@ -49,9 +50,10 @@ function configure_shell() {
 
 function install_themes() {
   echo "\n🎨 Installing themes and icons..."
+  rm -rf ~/Downloads/Sweet
   git clone https://github.com/EliverLara/Sweet.git ~/Downloads/Sweet
   mkdir -p ~/.local/share/plasma/desktoptheme/
-  cp -r ~/Downloads/Sweet ~/.local/share/plasma/desktoptheme/
+  rsync -a --exclude='.git' ~/Downloads/Sweet/ ~/.local/share/plasma/desktoptheme/Sweet/
 
   wget -O tela-icon-theme.zip https://github.com/vinceliuice/Tela-icon-theme/archive/refs/heads/master.zip
   unzip tela-icon-theme.zip -d ~/Downloads/
@@ -61,15 +63,40 @@ function install_themes() {
 function apply_kde_config() {
   if command -v lookandfeeltool &> /dev/null; then
     echo "\n🧩 Applying KDE configurations..."
-    lookandfeeltool -a Sweet
+
+    best_theme=""
+    for theme in $(lookandfeeltool -l); do
+      if [[ "$theme" =~ Sweet ]]; then
+        best_theme="$theme"
+        break
+      elif [[ "$theme" =~ breezedark ]]; then
+        best_theme="$theme"
+      fi
+    done
+
+    if [[ -n "$best_theme" ]]; then
+      echo "Applying LookAndFeel theme: $best_theme"
+      kwriteconfig5 --file kdeglobals --group KDE --key LookAndFeelPackage "$best_theme"
+    else
+      echo "⚠️ No suitable LookAndFeel theme found."
+    fi
+
     kwriteconfig5 --file kdeglobals --group Icons --key Theme Tela
     kwriteconfig5 --file kwinrc --group Compositing --key Enabled true
     kwriteconfig5 --file kwinrc --group Plugins --key blurEnabled true
-    qdbus org.kde.KWin /KWin reconfigure
 
+    if qdbus org.kde.KWin >/dev/null 2>&1; then
+      qdbus org.kde.KWin /KWin reconfigure
+    else
+      echo "⚠️ KWin is not running. Skipping reconfigure step."
+    fi
+
+    mkdir -p ~/.local/share/color-schemes/
     cp kde-configs/colorschemes/RifeliDark.colors ~/.local/share/color-schemes/
+    mkdir -p ~/.config/kwinrulesrc.d/
     cp kde-configs/kwinrules/transparency-rule.kwinrule ~/.config/kwinrulesrc.d/
-    dconf load /org/gnome/shell/extensions/hot-corners/ < kde-configs/hotcorners/hotcorners.dconf
+
+    echo "⚠️ Skipping GNOME hot corners config — not applicable in KDE."
   fi
 }
 
@@ -77,14 +104,19 @@ function apply_wallpaper() {
   echo "\n🖼️ Setting wallpaper..."
   wallpaper_path="$PWD/assets/wallpapers/retro_pc_rifeli.png"
   if [ -f "$wallpaper_path" ]; then
-    qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
-      var allDesktops = desktops();
-      for (i = 0; i < allDesktops.length; i++) {
-        d = allDesktops[i];
-        d.wallpaperPlugin = \"org.kde.image\";
-        d.currentConfigGroup = Array(\"Wallpaper\", \"org.kde.image\", \"General\");
-        d.writeConfig(\"Image\", \"file://$wallpaper_path\");
-      }"
+    if qdbus org.kde.plasmashell >/dev/null 2>&1; then
+      qdbus org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript "
+        var allDesktops = desktops();
+        for (var i = 0; i < allDesktops.length; i++) {
+          var d = allDesktops[i];
+          d.wallpaperPlugin = \"org.kde.image\";
+          d.currentConfigGroup = Array(\"Wallpaper\", \"org.kde.image\", \"General\");
+          d.writeConfig(\"Image\", \"file://$wallpaper_path\");
+        }
+      "
+    else
+      echo "⚠️ PlasmaShell is not running. Skipping wallpaper setup."
+    fi
   fi
 }
 
@@ -119,3 +151,4 @@ setup_shortcuts
 
 echo -e "\n✅ \033[1mInstallation complete! Reboot to start KDE Plasma.\033[0m"
 echo -e "\n🔧 Powered by Leonardo Rifeli — https://rifeli.dev"
+echo -e "\n💻 \033[1mEnjoy your new Omakub-inspired KDE Plasma setup!\033[0m"
