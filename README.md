@@ -1,5 +1,7 @@
 # LMDE Post-Install Script (Omakub Style)
 
+![Preview](assets/screenshots/omakub-lmde-preview.png)
+
 This project contains a post-install script to transform Linux Mint Debian Edition (LMDE) into a beautiful and productive KDE Plasma environment inspired by [Omakub](https://omakub.org).
 
 ## Features
