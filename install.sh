@@ -32,7 +32,7 @@ cp config/starship.toml ~/.config/starship.toml
 # Set Zsh as default shell
 chsh -s $(which zsh)
 
-# Install Sweet theme and Tela icons (example)
+# Install Sweet theme and Tela icons
 echo "\n🎨 Installing themes and icons..."
 git clone https://github.com/EliverLara/Sweet.git ~/Downloads/Sweet
 mkdir -p ~/.local/share/plasma/desktoptheme/
@@ -44,6 +44,23 @@ cd ~/Downloads/Tela-icon-theme-master
 ./install.sh -d ~/.local/share/icons
 cd -
 
-# TODO: Optional: apply theme and icon settings via lookandfeeltool
+# Apply Sweet theme and Tela icons if lookandfeeltool exists
+if command -v lookandfeeltool &> /dev/null; then
+    echo "\n🎨 Applying Sweet KDE theme..."
+    lookandfeeltool -a Sweet
+    kwriteconfig5 --file kdeglobals --group Icons --key Theme Tela
+
+    # Set transparency and blur
+    kwriteconfig5 --file kwinrc --group Compositing --key Enabled true
+    kwriteconfig5 --file kwinrc --group Plugins --key blurEnabled true
+    qdbus org.kde.KWin /KWin reconfigure
+fi
+
+# Install Latte Dock layout (optional)
+echo "\n🧩 Importing Latte Dock layout..."
+mkdir -p ~/.config/latte/
+cp kde-configs/latte-layouts/omakub.layout.latte ~/.config/latte/
+latte-dock --import-layout ~/.config/latte/omakub.layout.latte --replace &
 
 echo "\n✅ Post-install complete. Please reboot to start KDE Plasma."
+echo "\n Powered-by rifeli.dev"

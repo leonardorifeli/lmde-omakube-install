@@ -9,6 +9,9 @@ This project contains a post-install script to transform Linux Mint Debian Editi
 - Installs Starship prompt
 - Adds aliases for `kubectl` and `git`
 - Downloads and installs Sweet theme and Tela icons
+- Applies KDE theme and icons using `lookandfeeltool`
+- Enables blur and window transparency effects via `kwriteconfig5`
+- Installs Latte Dock and imports pre-defined layout
 - Includes structure to install themes, fonts, wallpapers
 
 ## Requirements
@@ -17,16 +20,16 @@ This project contains a post-install script to transform Linux Mint Debian Editi
 
 ## How to Use
 ```bash
-git clone https://github.com/YOUR-USERNAME/lmde-postinstall.git
-cd lmde-postinstall
+git clone https://github.com/leonardorifeli/lmde-omakube-install.git
+cd lmde-omakube-install
 chmod +x install.sh
 ./install.sh
 ```
 
 ## To Do
-- Add automated theme/icon application (via `lookandfeeltool`)
-- Add blur/transparency setup
-- Add KDE config import script
+- Add optional Latte Dock layout variations
+- Add wallpaper auto-setup
+- Add more KDE customizations (hotkeys, window rules, etc)
 
 ## License
 MIT License
